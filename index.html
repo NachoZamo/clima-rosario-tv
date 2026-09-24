@@ -10,19 +10,19 @@
 <style>
   :root{
     color-scheme: dark;
-    --bg-top:#0c1826;
-    --bg-bottom:#081120;
-    --surface:rgba(255,255,255,0.035);
-    --surface-strong:rgba(255,255,255,0.06);
-    --border:rgba(255,255,255,0.09);
-    --text:#f2f6fb;
-    --text-dim:#93a7c2;
-    --text-faint:#5c7391;
-    --amber:#ffb454;
+    --bg-top:#2f7dc4;
+    --bg-bottom:#154f88;
+    --surface:rgba(255,255,255,0.09);
+    --surface-strong:rgba(255,255,255,0.14);
+    --border:rgba(255,255,255,0.18);
+    --text:#ffffff;
+    --text-dim:#d3e4f7;
+    --text-faint:#9dbde0;
+    --amber:#ffc46b;
     --amber-dim:#8a6a3a;
-    --blue:#58c4ea;
-    --rose:#ff8577;
-    --violet:#ac8dff;
+    --blue:#bfe6ff;
+    --rose:#ff9d8f;
+    --violet:#c9b6ff;
     --font-display:'Big Shoulders Display','Arial Narrow',sans-serif;
     --font-body:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
     --font-mono:'IBM Plex Mono','Courier New',monospace;
@@ -32,8 +32,8 @@
     height:100%;
     margin:0;
     background:
-      radial-gradient(140% 100% at 15% -10%, #142a44 0%, transparent 55%),
-      linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      radial-gradient(120% 90% at 28% 22%, #5aa8e0 0%, transparent 60%),
+      linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
     color:var(--text);
     font-family:var(--font-body);
     overflow:hidden;
@@ -253,7 +253,7 @@
   .day-row .d-name{ font-size:14px; font-weight:600; }
   .day-row.today .d-name{ color:var(--amber); }
   .day-row .wicon{ width:26px; height:26px; color:var(--text-dim); }
-  .day-row .d-range{ position:relative; height:6px; border-radius:4px; background:rgba(255,255,255,0.08); }
+  .day-row .d-range{ position:relative; height:6px; border-radius:4px; background:rgba(255,255,255,0.16); }
   .day-row .d-range .bar{
     position:absolute; top:0; bottom:0; border-radius:4px;
     background:linear-gradient(90deg, var(--blue), var(--amber));
