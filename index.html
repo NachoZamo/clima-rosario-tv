@@ -107,8 +107,8 @@
   }
   .col-today{
     display:grid;
-    grid-template-rows:auto auto 1fr;
-    gap:18px;
+    grid-template-rows:auto auto auto 1fr;
+    gap:14px;
     min-height:0;
   }
 
@@ -137,20 +137,60 @@
   .current .feels{ font-size:15px; color:var(--text-dim); }
   .current .stats{
     margin-left:auto;
-    display:grid;
-    grid-template-columns:repeat(3,auto);
-    gap:22px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    text-align:right;
   }
-  .stat{ text-align:center; }
   .stat .val{
     font-family:var(--font-mono);
-    font-size:20px; font-weight:600;
+    font-size:26px; font-weight:600;
     font-variant-numeric:tabular-nums;
   }
   .stat .lbl{
     font-size:10.5px; color:var(--text-faint);
-    text-transform:uppercase; letter-spacing:1.5px; margin-top:2px;
+    text-transform:uppercase; letter-spacing:1.5px;
   }
+
+  /* detail cards: wind / pressure / sun / moon */
+  .detail-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+  }
+  .detail-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-width:0;
+  }
+  .dc-title{
+    font-family:var(--font-mono);
+    font-size:11px; letter-spacing:1.8px;
+    color:var(--text-faint); text-transform:uppercase;
+  }
+  .dc-body{ display:flex; align-items:center; gap:12px; flex:1; }
+  .dc-main{ font-family:var(--font-mono); font-size:23px; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .dc-main .dc-unit{ font-size:12px; font-weight:500; color:var(--text-dim); margin-left:3px; }
+  .dc-sub{ font-size:11px; color:var(--text-dim); line-height:1.3; }
+  .dc-values{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+
+  .compass{ width:60px; height:60px; flex:none; }
+  .compass text{ font-family:var(--font-mono); font-size:9px; fill:var(--text-faint); text-anchor:middle; }
+  .compass .needle{ transform-origin:50px 50px; transition:transform .6s ease; }
+
+  .pressure-body .press-spark{ width:56px; height:34px; flex:none; }
+
+  .arc-body{ flex-direction:column; align-items:stretch; gap:2px; }
+  .arc-body .arc{ width:100%; height:42px; overflow:visible; }
+  .arc-times{ display:flex; justify-content:space-between; }
+  .arc-times .t-val{ font-family:var(--font-mono); font-size:16px; font-weight:600; font-variant-numeric:tabular-nums; display:block; }
+  .arc-times .t-tag{ font-size:9.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:1px; }
+  .arc-times div:last-child{ text-align:right; }
 
   /* section label */
   .section-lbl{
@@ -330,8 +370,71 @@
       </div>
       <div class="stats">
         <div class="stat"><div class="val" id="statHum">--%</div><div class="lbl">Humedad</div></div>
-        <div class="stat"><div class="val" id="statWind">-- km/h</div><div class="lbl">Viento</div></div>
-        <div class="stat"><div class="val" id="statPress">-- hPa</div><div class="lbl">Presión</div></div>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-card">
+        <div class="dc-title">Viento</div>
+        <div class="dc-body">
+          <svg class="compass" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+            <text x="50" y="12">N</text>
+            <text x="90" y="53">E</text>
+            <text x="50" y="95">S</text>
+            <text x="10" y="53">O</text>
+            <g class="needle" id="windNeedle">
+              <path d="M50 15 L57 52 L50 45 L43 52 Z" fill="var(--blue)"/>
+            </g>
+          </svg>
+          <div class="dc-values">
+            <div class="dc-main"><span id="windSpeed">--</span><span class="dc-unit">km/h</span></div>
+            <div class="dc-sub" id="windGust">Ráfagas -- km/h</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="dc-title">Presión</div>
+        <div class="dc-body pressure-body">
+          <svg class="press-spark" viewBox="0 0 100 40" preserveAspectRatio="none">
+            <polyline id="pressLine" fill="none" stroke="var(--blue)" stroke-width="2.4" points=""/>
+            <circle id="pressDot" r="3" fill="var(--amber)"/>
+          </svg>
+          <div class="dc-values">
+            <div class="dc-main"><span id="pressVal">--</span><span class="dc-unit">hPa</span></div>
+            <div class="dc-sub" id="pressTrend">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="dc-title">Sol</div>
+        <div class="dc-body arc-body">
+          <svg class="arc" viewBox="0 0 100 50">
+            <path d="M6 46 A44 44 0 0 1 94 46" fill="none" stroke="var(--border)" stroke-width="2"/>
+            <circle id="sunMarker" r="4.5" fill="var(--amber)"/>
+          </svg>
+          <div class="arc-times">
+            <div><span class="t-val" id="sunRise">--:--</span><span class="t-tag">Sale</span></div>
+            <div><span class="t-val" id="sunSet">--:--</span><span class="t-tag">Se pone</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="dc-title">Luna</div>
+        <div class="dc-body arc-body">
+          <svg class="arc" viewBox="0 0 100 50">
+            <path d="M6 46 A44 44 0 0 1 94 46" fill="none" stroke="var(--border)" stroke-width="2"/>
+            <circle id="moonMarker" r="4.5" fill="var(--violet)"/>
+          </svg>
+          <div class="arc-times">
+            <div><span class="t-val" id="moonRise">--:--</span><span class="t-tag">Sale</span></div>
+            <div><span class="t-val" id="moonSet">--:--</span><span class="t-tag">Se pone</span></div>
+          </div>
+        </div>
+        <div class="dc-sub" id="moonPhase">--</div>
       </div>
     </div>
 
@@ -357,9 +460,9 @@
   var LAT = -32.9468, LON = -60.6393;
   var TZ = "America/Argentina/Buenos_Aires";
   var API = "https://api.open-meteo.com/v1/forecast?latitude=" + LAT + "&longitude=" + LON +
-    "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,surface_pressure" +
-    "&hourly=temperature_2m,precipitation_probability,weather_code,is_day" +
-    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+    "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure" +
+    "&hourly=temperature_2m,precipitation_probability,weather_code,is_day,surface_pressure" +
+    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,moonrise,moonset,moon_phase" +
     "&timezone=" + encodeURIComponent(TZ) + "&forecast_days=7&wind_speed_unit=kmh";
 
   var WMAP = {
@@ -404,6 +507,84 @@
   var lastGood = null;
   var lastFetchTime = null;
 
+  function fmtTime(iso){
+    if(!iso) return '--:--';
+    var d = new Date(iso + ':00');
+    return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  function moonPhaseName(f){
+    if(f == null) return '--';
+    if(f < 0.02 || f > 0.98) return 'Luna nueva';
+    if(f < 0.24) return 'Creciente';
+    if(f < 0.26) return 'Cuarto creciente';
+    if(f < 0.49) return 'Creciente gibosa';
+    if(f < 0.51) return 'Luna llena';
+    if(f < 0.74) return 'Menguante gibosa';
+    if(f < 0.76) return 'Cuarto menguante';
+    return 'Menguante';
+  }
+
+  // position a marker along the semicircular arc (center 50,46 r=44) given t in [0,1]
+  function placeOnArc(el, t){
+    t = Math.max(0, Math.min(1, t));
+    var theta = (180 - t * 180) * Math.PI / 180;
+    var x = 50 + 44 * Math.cos(theta);
+    var y = 46 - 44 * Math.sin(theta);
+    el.setAttribute('cx', x.toFixed(1));
+    el.setAttribute('cy', y.toFixed(1));
+  }
+
+  function renderDetails(data, startIdx){
+    var cur = data.current, daily = data.daily;
+    var nowMs = Date.now();
+
+    // wind
+    document.getElementById('windNeedle').style.transform = 'rotate(' + cur.wind_direction_10m + 'deg)';
+    document.getElementById('windSpeed').textContent = round(cur.wind_speed_10m);
+    document.getElementById('windGust').textContent = 'Ráfagas ' + round(cur.wind_gusts_10m) + ' km/h';
+
+    // pressure: last ~6h sparkline + trend
+    var pAll = data.hourly.surface_pressure;
+    var from = Math.max(0, startIdx - 5);
+    var slice = pAll.slice(from, startIdx + 1);
+    if(slice.length < 2) slice = [cur.surface_pressure, cur.surface_pressure];
+    var pMin = Math.min.apply(null, slice), pMax = Math.max.apply(null, slice);
+    var pSpan = Math.max(0.6, pMax - pMin);
+    var pts = slice.map(function(v, i){
+      var x = (i / (slice.length - 1)) * 100;
+      var y = 36 - ((v - pMin) / pSpan) * 32;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    });
+    document.getElementById('pressLine').setAttribute('points', pts.join(' '));
+    var lastPt = pts[pts.length - 1].split(',');
+    document.getElementById('pressDot').setAttribute('cx', lastPt[0]);
+    document.getElementById('pressDot').setAttribute('cy', lastPt[1]);
+    document.getElementById('pressVal').textContent = round(cur.surface_pressure);
+    var delta = slice[slice.length - 1] - slice[0];
+    document.getElementById('pressTrend').textContent =
+      delta > 0.6 ? 'En ascenso' : (delta < -0.6 ? 'En descenso' : 'Estable');
+
+    // sun
+    document.getElementById('sunRise').textContent = fmtTime(daily.sunrise[0]);
+    document.getElementById('sunSet').textContent = fmtTime(daily.sunset[0]);
+    if(daily.sunrise[0] && daily.sunset[0]){
+      var sr = new Date(daily.sunrise[0] + ':00').getTime();
+      var ss = new Date(daily.sunset[0] + ':00').getTime();
+      placeOnArc(document.getElementById('sunMarker'), (nowMs - sr) / (ss - sr));
+    }
+
+    // moon
+    document.getElementById('moonRise').textContent = fmtTime(daily.moonrise ? daily.moonrise[0] : null);
+    document.getElementById('moonSet').textContent = fmtTime(daily.moonset ? daily.moonset[0] : null);
+    document.getElementById('moonPhase').textContent = moonPhaseName(daily.moon_phase ? daily.moon_phase[0] : null);
+    if(daily.moonrise && daily.moonrise[0] && daily.moonset && daily.moonset[0]){
+      var mr = new Date(daily.moonrise[0] + ':00').getTime();
+      var ms = new Date(daily.moonset[0] + ':00').getTime();
+      placeOnArc(document.getElementById('moonMarker'), (nowMs - mr) / (ms - mr));
+    }
+  }
+
   function render(data){
     lastGood = data;
     lastFetchTime = new Date();
@@ -415,8 +596,6 @@
     document.getElementById('curCond').textContent = ic.label;
     document.getElementById('curFeels').textContent = 'Sensación térmica ' + round(cur.apparent_temperature) + '°';
     document.getElementById('statHum').textContent = round(cur.relative_humidity_2m) + '%';
-    document.getElementById('statWind').textContent = round(cur.wind_speed_10m) + ' km/h';
-    document.getElementById('statPress').textContent = round(cur.surface_pressure) + ' hPa';
 
     // hourly: find index >= now, then step every 2 hours across the next 24h
     var times = data.hourly.time;
@@ -445,6 +624,8 @@
         '<div class="h-pop">' + (pop >= 20 ? pop + '%' : '') + '</div>';
       row.appendChild(cell);
     }
+
+    renderDetails(data, startIdx);
 
     // weekly
     var d = data.daily;
